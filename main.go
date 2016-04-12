@@ -3,7 +3,6 @@ package main
 import (
 	"bufio"
 	"fmt"
-	"log"
 	"net"
 	"os"
 )
@@ -17,24 +16,32 @@ const (
 )
 
 type Subnet struct {
-	Size int
-	Mode Mode
+	Mode          Mode
+	RequestedSize int
+	RequiredSize  int
+	IPNet         *net.IPNet
+	HostMin       net.IP
+	HostMax       net.IP
+	Broadcast     net.IP
 }
 
 type Network struct {
 	IPNet   *net.IPNet
 	Subnets []Subnet
+	Size    int
 }
 
-var in = bufio.NewScanner(os.Stdin)
+var in *bufio.Scanner
+
+func init() {
+	in = bufio.NewScanner(os.Stdin)
+}
 
 func main() {
-}
-
-func prompt(msg string) string {
-	fmt.Printf("%s: ", msg)
-	if !in.Scan() {
-		log.Fatalln(in.Err())
+	n, err := promptNetworkInfo()
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
 	}
-	return in.Text()
+	fmt.Println(output(n))
 }

@@ -9,38 +9,57 @@ import (
 	"text/tabwriter"
 )
 
-func promptNetworkInfo() (Network, error) {
-	req := Network{}
+func promptNetworkInfo() (network Network, err error) {
+	input := prompt("IPv4 Network address (CIDR format)")
 
-	addr := prompt("IPv4 Network address (CIDR format)")
-	nets := prompt("How many subnets you want to create?")
-
-	_, ipnet, err := net.ParseCIDR(addr)
+	_, ipnet, err := net.ParseCIDR(input)
 	if err != nil {
-		return req, fmt.Errorf("Error parsing network address %s", err)
+		return network, fmt.Errorf("Error parsing network address %s", err)
 	}
 
-	req.IPNet = ipnet
+	network.IPNet = ipnet
 
-	size, err := strconv.Atoi(nets)
+	input = prompt("Number of subnets to create?")
+	n, err := strconv.Atoi(input)
 	if err != nil {
-		return req, err
+		return network, fmt.Errorf("Error parsing number of subnets %s", err)
 	}
 
-	for i := 0; i < size; i++ {
-		n := prompt(fmt.Sprintf("Subnet #%d size", i+1))
-		_, err := strconv.Atoi(n)
+	for i := 0; i < n; i++ {
+		subnet, err := promptSubnet(i)
 		if err != nil {
-			log.Fatalln(err)
+			return network, err
 		}
-		n = prompt(fmt.Sprintf("Subnet #%d mode (0 = Mininum, 1 = Maximum, 2 = Balanced)", i+1))
-		_, err = strconv.Atoi(n)
-		if err != nil {
-			log.Fatalln(err)
-		}
+		network.Subnets = append(network.Subnets, subnet)
 	}
 
-	return Network{}, nil
+	return network, nil
+}
+
+func promptSubnet(i int) (subnet Subnet, err error) {
+	msg := fmt.Sprintf("Subnet #%d size", i+1)
+	input := prompt(msg)
+	n, err := strconv.Atoi(input)
+	if err != nil {
+		return subnet, fmt.Errorf("Error parsing subnet size %s", err)
+	}
+	if n < 1 {
+		return subnet, fmt.Errorf("Subnet size must be greater than 0")
+	}
+	subnet.RequestedSize = n
+
+	msg = fmt.Sprintf("Subnet #%d mode (0 = Mininum, 1 = Maximum, 2 = Balanced)", i+1)
+	input = prompt(msg)
+	n, err = strconv.Atoi(input)
+	if err != nil {
+		return subnet, fmt.Errorf("Error parsing subnet mode %s", err)
+	}
+	if n < 0 || n > 3 {
+		return subnet, fmt.Errorf("Invalid mode")
+	}
+	subnet.Mode = Mode(n)
+
+	return subnet, nil
 }
 
 func output(res Network) string {
@@ -53,4 +72,12 @@ func output(res Network) string {
 
 	w.Flush()
 	return buf.String()
+}
+
+func prompt(msg string) string {
+	fmt.Printf("%s: ", msg)
+	if !in.Scan() {
+		log.Fatalln(in.Err())
+	}
+	return in.Text()
 }
