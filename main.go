@@ -3,32 +3,28 @@ package main
 import (
 	"bufio"
 	"fmt"
-	"net"
 	"os"
 )
 
-type Mode int
-
 const (
-	Minimum Mode = iota
+	Minimum int = iota
 	Maximum
 	Balanced
 )
 
-type Subnet struct {
-	Mode          Mode
-	RequestedSize int
-	RequiredSize  int
-	IPNet         *net.IPNet
-	HostMin       net.IP
-	HostMax       net.IP
-	Broadcast     net.IP
+type Network struct {
+	IP      string
+	Subnets []Subnet
 }
 
-type Network struct {
-	IPNet   *net.IPNet
-	Subnets []Subnet
-	Size    int
+type Subnet struct {
+	Mode      int
+	Size      int
+	IP        string
+	Mask      string
+	RangeMin  string
+	RangeMax  string
+	Broadcast string
 }
 
 var in *bufio.Scanner
@@ -38,10 +34,10 @@ func init() {
 }
 
 func main() {
-	n, err := promptNetworkInfo()
+	_, err := promptNetwork()
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)
 	}
-	fmt.Println(output(n))
+	//fmt.Println(output(n))
 }
