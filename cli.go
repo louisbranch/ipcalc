@@ -14,7 +14,7 @@ func promptNetwork() (input Network, err error) {
 	}
 	input.IP = txt
 
-	txt, err = prompt("Number of subnets to create?")
+	txt, err = prompt("Number of subnets to create")
 	if err != nil {
 		return input, err
 	}
@@ -57,13 +57,19 @@ func promptNetwork() (input Network, err error) {
 	return input, nil
 }
 
-func output(network Network) string {
+func output(subnets []Subnet) string {
 	buf := new(bytes.Buffer)
 	w := tabwriter.NewWriter(buf, 8, 8, 2, ' ', 0)
-	fmt.Fprintf(w, "Address:\t%s\n", network.IP)
 
-	//mask := res.IPNet.Mask
-	//fmt.Fprintf(w, "Netmask:\t%d.%d.%d.%d\n", mask[0], mask[1], mask[2], mask[3])
+	for _, subnet := range subnets {
+		fmt.Fprintln(w, "---------")
+		fmt.Fprintf(w, "Address:\t%s\n", subnet.IP)
+		fmt.Fprintf(w, "Size:\t%d\n", subnet.Size)
+		fmt.Fprintf(w, "Mask:\t%s\n", subnet.Mask)
+		fmt.Fprintf(w, "Host Min:\t%s\n", subnet.RangeMin)
+		fmt.Fprintf(w, "Host Max:\t%s\n", subnet.RangeMax)
+		fmt.Fprintf(w, "Broadcast:\t%s\n", subnet.Broadcast)
+	}
 
 	w.Flush()
 	return buf.String()

@@ -18,6 +18,7 @@ type Network struct {
 }
 
 type Subnet struct {
+	Name      string
 	Mode      int
 	Size      int
 	IP        string
@@ -34,10 +35,16 @@ func init() {
 }
 
 func main() {
-	_, err := promptNetwork()
+	network, err := promptNetwork()
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)
 	}
-	//fmt.Println(output(n))
+	subnets, err := calculateSubnets(network)
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+
+	fmt.Println(output(subnets))
 }
