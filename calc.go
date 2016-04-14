@@ -18,9 +18,10 @@ func calculateSubnets(network Network) ([]Subnet, error) {
 	mask := ipnet.Mask
 	ones, bits := mask.Size()
 	wildMask := bits - ones
+	ip = ip.Mask(mask)
 
 	for _, subnet := range network.Subnets {
-		size := subnet.Size + 2
+		size := subnet.Size + 2 //host && broadcast
 
 		reqBits := int(math.Ceil(math.Log2(float64(size))))
 		size = pow2(reqBits)
@@ -30,16 +31,11 @@ func calculateSubnets(network Network) ([]Subnet, error) {
 			return nil, fmt.Errorf(msg, subnet.Size, (pow2(wildMask))-2)
 		}
 
-		ip := ip.Mask(mask)
-		mask = net.CIDRMask(32-reqBits, bits)
-
-		ipn := &net.IPNet{
-			IP:   ip,
-			Mask: mask,
-		}
+		mask = net.CIDRMask(bits-reqBits, bits)
+		ones, _ = mask.Size()
 
 		subnet.Size = size
-		subnet.IP = ipn.String()
+		subnet.IP = fmt.Sprintf("%s/%d", ip, ones)
 		subnet.Mask = net.IP(mask).String()
 
 		n := binary.BigEndian.Uint32(ip.To4())
@@ -48,6 +44,7 @@ func calculateSubnets(network Network) ([]Subnet, error) {
 		subnet.RangeMin = intToIP(n).String()
 
 		n += uint32(size) - 1 // last bit
+		ip = intToIP(n)       // new ip
 
 		n -= 1
 		subnet.Broadcast = intToIP(n).String()
