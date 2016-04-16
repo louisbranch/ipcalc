@@ -24,7 +24,13 @@ func promptNetwork() (input Network, err error) {
 	}
 
 	for i := 0; i < n; i++ {
-		msg := fmt.Sprintf("Subnet #%d size", i+1)
+		msg := fmt.Sprintf("Subnet #%d name", i+1)
+		name, err := prompt(msg)
+		if err != nil {
+			return input, err
+		}
+
+		msg = fmt.Sprintf("Subnet #%d size", i+1)
 		txt, err := prompt(msg)
 		if err != nil {
 			return input, err
@@ -50,7 +56,7 @@ func promptNetwork() (input Network, err error) {
 			return input, fmt.Errorf("Invalid mode")
 		}
 
-		subnet := Subnet{Size: size, Mode: mode}
+		subnet := Subnet{Name: name, Size: size, Mode: mode}
 		input.Subnets = append(input.Subnets, subnet)
 	}
 
@@ -62,7 +68,8 @@ func output(subnets []Subnet) string {
 	w := tabwriter.NewWriter(buf, 8, 8, 2, ' ', 0)
 
 	for _, subnet := range subnets {
-		fmt.Fprintln(w, "---------")
+		fmt.Fprintln(w, "Subnets:\n---------")
+		fmt.Fprintf(w, "Name:\t%s\n", subnet.Name)
 		fmt.Fprintf(w, "Address:\t%s\n", subnet.IP)
 		fmt.Fprintf(w, "Size:\t%d\n", subnet.Size)
 		fmt.Fprintf(w, "Mask:\t%s\n", subnet.Mask)
