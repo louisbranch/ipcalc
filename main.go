@@ -3,6 +3,7 @@ package main
 import (
 	"bufio"
 	"fmt"
+	"io/ioutil"
 	"os"
 )
 
@@ -11,6 +12,8 @@ const (
 	Maximum
 	Balanced
 )
+
+const file = "output.txt"
 
 type Network struct {
 	IP      string
@@ -35,6 +38,7 @@ func init() {
 }
 
 func main() {
+
 	network, err := promptNetwork()
 	if err != nil {
 		fmt.Println(err)
@@ -46,5 +50,13 @@ func main() {
 		os.Exit(1)
 	}
 
-	fmt.Println(output(subnets))
+	txt := output(subnets)
+
+	err = ioutil.WriteFile(file, []byte(txt), 0644)
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+	fmt.Printf("Subnets configuration saved to file: %s\n", file)
+
 }
