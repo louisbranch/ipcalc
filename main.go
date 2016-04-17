@@ -17,7 +17,7 @@ const file = "output.txt"
 
 type Network struct {
 	IP      string
-	Subnets []Subnet
+	Subnets Subnets
 }
 
 type Subnets []Subnet

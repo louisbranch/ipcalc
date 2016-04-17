@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"math"
 	"net"
+	"sort"
 )
 
 func calculateSubnets(network Network) (Subnets, error) {
@@ -13,6 +14,7 @@ func calculateSubnets(network Network) (Subnets, error) {
 		return nil, err
 	}
 
+	sort.Sort(network.Subnets)
 	var subnets Subnets
 
 	mask := ipnet.Mask
@@ -69,4 +71,19 @@ func intToIP(n uint32) net.IP {
 	ip[2] = byte(n >> 8)
 	ip[3] = byte(n)
 	return ip
+}
+
+func (s Subnets) Less(i, j int) bool {
+	if s[i].Mode == s[j].Mode {
+		return s[i].Size < s[j].Size
+	}
+	return s[i].Mode < s[j].Mode
+}
+
+func (s Subnets) Swap(i, j int) {
+	s[i], s[j] = s[j], s[i]
+}
+
+func (s Subnets) Len() int {
+	return len(s)
 }
