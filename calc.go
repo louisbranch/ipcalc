@@ -7,13 +7,13 @@ import (
 	"net"
 )
 
-func calculateSubnets(network Network) ([]Subnet, error) {
+func calculateSubnets(network Network) (Subnets, error) {
 	ip, ipnet, err := net.ParseCIDR(network.IP)
 	if err != nil {
 		return nil, err
 	}
 
-	var subnets []Subnet
+	var subnets Subnets
 
 	mask := ipnet.Mask
 	ones, bits := mask.Size()

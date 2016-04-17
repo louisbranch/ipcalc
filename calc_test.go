@@ -8,7 +8,7 @@ import (
 func TestCalculateSubnets(t *testing.T) {
 	egs := []struct {
 		network Network
-		subnets []Subnet
+		subnets Subnets
 		err     string
 	}{
 		{
@@ -18,7 +18,7 @@ func TestCalculateSubnets(t *testing.T) {
 		{
 			network: Network{
 				IP: "11.22.33.44/24",
-				Subnets: []Subnet{
+				Subnets: Subnets{
 					{
 						Mode: Minimum,
 						Size: 255,
@@ -30,14 +30,14 @@ func TestCalculateSubnets(t *testing.T) {
 		{
 			network: Network{
 				IP: "11.22.33.44/24",
-				Subnets: []Subnet{
+				Subnets: Subnets{
 					{
 						Mode: Minimum,
 						Size: 10,
 					},
 				},
 			},
-			subnets: []Subnet{
+			subnets: Subnets{
 				{
 					Mode:      Minimum,
 					Size:      16,
@@ -52,14 +52,14 @@ func TestCalculateSubnets(t *testing.T) {
 		{
 			network: Network{
 				IP: "192.168.1.2/30",
-				Subnets: []Subnet{
+				Subnets: Subnets{
 					{
 						Mode: Minimum,
 						Size: 2,
 					},
 				},
 			},
-			subnets: []Subnet{
+			subnets: Subnets{
 				{
 					Mode:      Minimum,
 					Size:      4,
@@ -74,14 +74,14 @@ func TestCalculateSubnets(t *testing.T) {
 		{
 			network: Network{
 				IP: "192.137.28.3/26",
-				Subnets: []Subnet{
+				Subnets: Subnets{
 					{
 						Mode: Minimum,
 						Size: 20,
 					},
 				},
 			},
-			subnets: []Subnet{
+			subnets: Subnets{
 				{
 					Mode:      Minimum,
 					Size:      32,
@@ -96,14 +96,14 @@ func TestCalculateSubnets(t *testing.T) {
 		{
 			network: Network{
 				IP: "192.137.28.3/18",
-				Subnets: []Subnet{
+				Subnets: Subnets{
 					{
 						Mode: Minimum,
 						Size: 300,
 					},
 				},
 			},
-			subnets: []Subnet{
+			subnets: Subnets{
 				{
 					Mode:      Minimum,
 					Size:      512,
@@ -118,7 +118,7 @@ func TestCalculateSubnets(t *testing.T) {
 		{
 			network: Network{
 				IP: "11.22.33.44/24",
-				Subnets: []Subnet{
+				Subnets: Subnets{
 					{
 						Mode: Minimum,
 						Size: 10,
@@ -129,7 +129,7 @@ func TestCalculateSubnets(t *testing.T) {
 					},
 				},
 			},
-			subnets: []Subnet{
+			subnets: Subnets{
 				{
 					Mode:      Minimum,
 					Size:      16,
@@ -153,7 +153,7 @@ func TestCalculateSubnets(t *testing.T) {
 		{
 			network: Network{
 				IP: "192.137.28.3/18",
-				Subnets: []Subnet{
+				Subnets: Subnets{
 					{
 						Mode: Minimum,
 						Size: 300,
@@ -168,7 +168,7 @@ func TestCalculateSubnets(t *testing.T) {
 					},
 				},
 			},
-			subnets: []Subnet{
+			subnets: Subnets{
 				{
 					Mode:      Minimum,
 					Size:      512,

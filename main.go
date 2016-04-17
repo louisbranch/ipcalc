@@ -20,6 +20,8 @@ type Network struct {
 	Subnets []Subnet
 }
 
+type Subnets []Subnet
+
 type Subnet struct {
 	Name      string
 	Mode      int

@@ -63,7 +63,7 @@ func promptNetwork() (input Network, err error) {
 	return input, nil
 }
 
-func output(ip string, subnets []Subnet) []byte {
+func output(ip string, subnets Subnets) []byte {
 	buf := new(bytes.Buffer)
 	w := tabwriter.NewWriter(buf, 8, 8, 2, ' ', 0)
 
