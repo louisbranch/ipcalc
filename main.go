@@ -38,25 +38,23 @@ func init() {
 }
 
 func main() {
-
 	network, err := promptNetwork()
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)
 	}
+
 	subnets, err := calculateSubnets(network)
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)
 	}
 
-	txt := output(subnets)
-
-	err = ioutil.WriteFile(file, []byte(txt), 0644)
+	buf := output(subnets)
+	err = ioutil.WriteFile(file, buf, 644)
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)
 	}
 	fmt.Printf("Subnets configuration saved to file: %s\n", file)
-
 }
