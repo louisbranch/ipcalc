@@ -219,3 +219,54 @@ func TestCalculateSubnets(t *testing.T) {
 
 	}
 }
+
+func TestValidateModes(t *testing.T) {
+	egs := []struct {
+		input  Subnets
+		output Subnets
+	}{
+		{
+			input: Subnets{
+				{Mode: Minimum},
+				{Mode: Minimum},
+			},
+			output: Subnets{
+				{Mode: Minimum},
+				{Mode: Minimum},
+			},
+		},
+		{
+			input: Subnets{
+				{Mode: Minimum},
+				{Mode: Maximum},
+				{Mode: Balanced},
+			},
+			output: Subnets{
+				{Mode: Minimum},
+				{Mode: Maximum},
+				{Mode: Balanced},
+			},
+		},
+		{
+			input: Subnets{
+				{Mode: Minimum},
+				{Mode: Maximum},
+				{Mode: Maximum},
+				{Mode: Balanced},
+			},
+			output: Subnets{
+				{Mode: Minimum},
+				{Mode: Balanced},
+				{Mode: Balanced},
+				{Mode: Balanced},
+			},
+		},
+	}
+
+	for _, eg := range egs {
+		got := validateModes(eg.input)
+		if !reflect.DeepEqual(got, eg.output) {
+			t.Errorf("validateModes(%v)\n exp: %v\n got: %v\n\n", eg.input, eg.output, got)
+		}
+	}
+}

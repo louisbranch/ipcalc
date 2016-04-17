@@ -87,3 +87,28 @@ func (s Subnets) Swap(i, j int) {
 func (s Subnets) Len() int {
 	return len(s)
 }
+
+func validateModes(subnets Subnets) Subnets {
+	max := 0
+	for _, subnet := range subnets {
+		if subnet.Mode == Maximum {
+			max += 1
+		}
+		if max > 1 {
+			break
+		}
+	}
+
+	if max <= 1 {
+		return subnets
+	}
+
+	for i, subnet := range subnets {
+		if subnet.Mode == Maximum {
+			subnet.Mode = Balanced
+		}
+		subnets[i] = subnet
+	}
+
+	return subnets
+}
