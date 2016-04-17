@@ -73,6 +73,7 @@ func output(ip string, subnets Subnets) []byte {
 
 	for _, subnet := range subnets {
 		fmt.Fprintf(w, "Name:\t%s\n", subnet.Name)
+		fmt.Fprintf(w, "Mode:\t%s\n", printMode(subnet.Mode))
 		fmt.Fprintf(w, "Address:\t%s\n", subnet.IP)
 		fmt.Fprintf(w, "Size:\t%d\n", subnet.Size)
 		fmt.Fprintf(w, "Mask:\t%s\n", subnet.Mask)
@@ -92,4 +93,17 @@ func prompt(msg string) (string, error) {
 		return "", fmt.Errorf("Error parsing stdin %s", in.Err())
 	}
 	return in.Text(), nil
+}
+
+func printMode(mode int) string {
+	switch mode {
+	case 0:
+		return "Mininum"
+	case 1:
+		return "Maximum"
+	case 2:
+		return "Balanced"
+	default:
+		return "Invalid"
+	}
 }

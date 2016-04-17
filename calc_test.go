@@ -20,12 +20,13 @@ func TestCalculateSubnets(t *testing.T) {
 				IP: "11.22.33.44/24",
 				Subnets: Subnets{
 					{
+						Name: "Office",
 						Mode: Minimum,
 						Size: 255,
 					},
 				},
 			},
-			err: "Network is too small. Subnet requested 255, max available is 254",
+			err: "Network Office is too small. Subnet needs 512, max available is 256",
 		},
 		{
 			network: Network{
@@ -245,6 +246,78 @@ func TestCalculateSubnets(t *testing.T) {
 					RangeMin:  "192.168.1.1",
 					RangeMax:  "192.168.1.2",
 					Broadcast: "192.168.1.3",
+				},
+			},
+		},
+		{
+			network: Network{
+				IP: "192.168.1.2/24",
+				Subnets: Subnets{
+					{
+						Name: "Home",
+						Mode: Minimum,
+						Size: 140,
+					},
+					{
+						Name: "Work",
+						Mode: Minimum,
+						Size: 140,
+					},
+				},
+			},
+			err: "Network Work is too small. Subnet needs 256, max available is 0",
+		},
+		{
+			network: Network{
+				IP: "192.137.28.3/18",
+				Subnets: Subnets{
+					{
+						Name: "IPC144",
+						Mode: Minimum,
+						Size: 300,
+					},
+					{
+						Name: "JAC444",
+						Mode: Minimum,
+						Size: 30,
+					},
+					{
+						Name: "INT422",
+						Mode: Maximum,
+						Size: 15,
+					},
+				},
+			},
+			subnets: Subnets{
+				{
+					Name:      "JAC444",
+					Mode:      Minimum,
+					Size:      32,
+					IP:        "192.137.0.0/27",
+					Mask:      "255.255.255.224",
+					RangeMin:  "192.137.0.1",
+					RangeMax:  "192.137.0.30",
+					Broadcast: "192.137.0.31",
+				},
+				{
+					Name:      "IPC144",
+					Mode:      Minimum,
+					Size:      512,
+					IP:        "192.137.0.32/23",
+					Mask:      "255.255.254.0",
+					RangeMin:  "192.137.0.33",
+					RangeMax:  "192.137.2.30",
+					Broadcast: "192.137.2.31",
+				},
+				{
+					Name:      "INT422",
+					Mode:      Maximum,
+					Size:      15840,
+					IP:        "192.137.2.32/19",
+					Mask:      "255.255.224.0",
+					RangeMin:  "192.137.2.33",
+					RangeMax:  "192.137.63.254",
+					Broadcast: "192.137.63.255",
 				},
 			},
 		},

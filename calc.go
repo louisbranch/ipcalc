@@ -18,24 +18,27 @@ func calculateSubnets(network Network) (Subnets, error) {
 
 	mask := ipnet.Mask
 	ones, bits := mask.Size()
-	wildMask := bits - ones
+	max := pow2(bits - ones)
 	ip = ip.Mask(mask)
 
 	for i, subnet := range subnets {
+		var reqBits int
 		size := subnet.Size + 2 //host && broadcast
 
-		reqBits := int(math.Ceil(math.Log2(float64(size))))
-		size = pow2(reqBits)
-
-		if reqBits > wildMask {
-			msg := "Network is too small. Subnet requested %d, max available is %d"
-			return nil, fmt.Errorf(msg, subnet.Size, (pow2(wildMask))-2)
-		}
-
 		if subnet.Mode == Maximum {
-			reqBits = wildMask
+			size = max
+			reqBits = int(math.Floor(math.Log2(float64(size))))
+		} else {
+			reqBits = int(math.Ceil(math.Log2(float64(size))))
 			size = pow2(reqBits)
 		}
+
+		if size > max {
+			msg := "Network %s is too small. Subnet needs %d, max available is %d"
+			return nil, fmt.Errorf(msg, subnet.Name, size, max)
+		}
+
+		max -= size
 
 		mask = net.CIDRMask(bits-reqBits, bits)
 		ones, _ = mask.Size()
@@ -65,6 +68,9 @@ func calculateSubnets(network Network) (Subnets, error) {
 }
 
 func pow2(n int) int {
+	if n == 0 {
+		return 0
+	}
 	return int(math.Pow(2, float64(n)))
 }
 
