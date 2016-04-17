@@ -50,7 +50,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	buf := output(subnets)
+	buf := output(network.IP, subnets)
 	err = ioutil.WriteFile(file, buf, 644)
 	if err != nil {
 		fmt.Println(err)

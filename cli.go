@@ -63,11 +63,13 @@ func promptNetwork() (input Network, err error) {
 	return input, nil
 }
 
-func output(subnets []Subnet) []byte {
+func output(ip string, subnets []Subnet) []byte {
 	buf := new(bytes.Buffer)
 	w := tabwriter.NewWriter(buf, 8, 8, 2, ' ', 0)
 
-	fmt.Fprintln(w, "Subnets:\n---------")
+	fmt.Fprintf(w, "Network:\t%s\n", ip)
+	fmt.Fprintf(w, "Subnets:\t%d\n", len(subnets))
+	fmt.Fprintln(w, "---------\t")
 
 	for _, subnet := range subnets {
 		fmt.Fprintf(w, "Name:\t%s\n", subnet.Name)
@@ -77,7 +79,7 @@ func output(subnets []Subnet) []byte {
 		fmt.Fprintf(w, "Host Min:\t%s\n", subnet.RangeMin)
 		fmt.Fprintf(w, "Host Max:\t%s\n", subnet.RangeMax)
 		fmt.Fprintf(w, "Broadcast:\t%s\n", subnet.Broadcast)
-		fmt.Fprintln(w, "---------")
+		fmt.Fprintln(w, "---------\t")
 	}
 
 	w.Flush()
