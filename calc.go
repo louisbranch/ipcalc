@@ -14,15 +14,14 @@ func calculateSubnets(network Network) (Subnets, error) {
 		return nil, err
 	}
 
-	sort.Sort(network.Subnets)
-	var subnets Subnets
+	subnets := validateModes(network.Subnets)
 
 	mask := ipnet.Mask
 	ones, bits := mask.Size()
 	wildMask := bits - ones
 	ip = ip.Mask(mask)
 
-	for _, subnet := range network.Subnets {
+	for i, subnet := range subnets {
 		size := subnet.Size + 2 //host && broadcast
 
 		reqBits := int(math.Ceil(math.Log2(float64(size))))
@@ -54,7 +53,7 @@ func calculateSubnets(network Network) (Subnets, error) {
 		n -= 1
 		subnet.RangeMax = intToIP(n).String()
 
-		subnets = append(subnets, subnet)
+		subnets[i] = subnet
 	}
 
 	return subnets, nil
@@ -99,16 +98,17 @@ func validateModes(subnets Subnets) Subnets {
 		}
 	}
 
-	if max <= 1 {
-		return subnets
+	if max > 1 {
+
+		for i, subnet := range subnets {
+			if subnet.Mode == Maximum {
+				subnet.Mode = Balanced
+			}
+			subnets[i] = subnet
+		}
 	}
 
-	for i, subnet := range subnets {
-		if subnet.Mode == Maximum {
-			subnet.Mode = Balanced
-		}
-		subnets[i] = subnet
-	}
+	sort.Sort(subnets)
 
 	return subnets
 }

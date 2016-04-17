@@ -237,9 +237,9 @@ func TestValidateModes(t *testing.T) {
 		},
 		{
 			input: Subnets{
-				{Mode: Minimum},
 				{Mode: Maximum},
 				{Mode: Balanced},
+				{Mode: Minimum},
 			},
 			output: Subnets{
 				{Mode: Minimum},
@@ -249,10 +249,10 @@ func TestValidateModes(t *testing.T) {
 		},
 		{
 			input: Subnets{
-				{Mode: Minimum},
 				{Mode: Maximum},
 				{Mode: Maximum},
 				{Mode: Balanced},
+				{Mode: Minimum},
 			},
 			output: Subnets{
 				{Mode: Minimum},
