@@ -204,6 +204,50 @@ func TestCalculateSubnets(t *testing.T) {
 				},
 			},
 		},
+		{
+			network: Network{
+				IP: "192.168.1.2/24",
+				Subnets: Subnets{
+					{
+						Mode: Maximum,
+						Size: 2,
+					},
+				},
+			},
+			subnets: Subnets{
+				{
+					Mode:      Maximum,
+					Size:      256,
+					IP:        "192.168.1.0/24",
+					Mask:      "255.255.255.0",
+					RangeMin:  "192.168.1.1",
+					RangeMax:  "192.168.1.254",
+					Broadcast: "192.168.1.255",
+				},
+			},
+		},
+		{
+			network: Network{
+				IP: "192.168.1.2/30",
+				Subnets: Subnets{
+					{
+						Mode: Maximum,
+						Size: 2,
+					},
+				},
+			},
+			subnets: Subnets{
+				{
+					Mode:      Maximum,
+					Size:      4,
+					IP:        "192.168.1.0/30",
+					Mask:      "255.255.255.252",
+					RangeMin:  "192.168.1.1",
+					RangeMax:  "192.168.1.2",
+					Broadcast: "192.168.1.3",
+				},
+			},
+		},
 	}
 
 	for _, eg := range egs {

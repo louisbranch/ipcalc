@@ -32,6 +32,11 @@ func calculateSubnets(network Network) (Subnets, error) {
 			return nil, fmt.Errorf(msg, subnet.Size, (pow2(wildMask))-2)
 		}
 
+		if subnet.Mode == Maximum {
+			reqBits = wildMask
+			size = pow2(reqBits)
+		}
+
 		mask = net.CIDRMask(bits-reqBits, bits)
 		ones, _ = mask.Size()
 
@@ -99,7 +104,6 @@ func validateModes(subnets Subnets) Subnets {
 	}
 
 	if max > 1 {
-
 		for i, subnet := range subnets {
 			if subnet.Mode == Maximum {
 				subnet.Mode = Balanced
