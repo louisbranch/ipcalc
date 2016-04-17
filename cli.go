@@ -75,7 +75,7 @@ func output(ip string, subnets Subnets) []byte {
 		fmt.Fprintf(w, "Name:\t%s\n", subnet.Name)
 		fmt.Fprintf(w, "Mode:\t%s\n", printMode(subnet.Mode))
 		fmt.Fprintf(w, "Address:\t%s\n", subnet.IP)
-		fmt.Fprintf(w, "Size:\t%d\n", subnet.Size)
+		fmt.Fprintf(w, "Size:\t%d\n", subnet.Size-2)
 		fmt.Fprintf(w, "Mask:\t%s\n", subnet.Mask)
 		fmt.Fprintf(w, "Host Min:\t%s\n", subnet.RangeMin)
 		fmt.Fprintf(w, "Host Max:\t%s\n", subnet.RangeMax)
