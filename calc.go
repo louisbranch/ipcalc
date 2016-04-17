@@ -26,12 +26,11 @@ func calculateSubnets(network Network) (Subnets, error) {
 		size := subnet.Size + 2 //host && broadcast
 
 		if subnet.Mode == Maximum {
-			size = max
-			reqBits = int(math.Floor(math.Log2(float64(size))))
+			reqBits = int(math.Floor(math.Log2(float64(max))))
 		} else {
 			reqBits = int(math.Ceil(math.Log2(float64(size))))
-			size = pow2(reqBits)
 		}
+		size = pow2(reqBits)
 
 		if size > max {
 			msg := "Network %s is too small. Subnet needs %d, max available is %d"
